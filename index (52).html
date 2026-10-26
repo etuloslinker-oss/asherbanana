@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Asher’s Banana</title>
+<meta name="description" content="Asher’s games, with a live preview of each one.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍌</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg1:#101a3a; --bg2:#1f3a8a; --bg3:#080d20; --line:#0a0f26;
+  --ink:#f4f7ff; --muted:#8fa6e0; --green:#3fcf4a; --green-d:#1f8a2c; --green-l:#8cff7a; --tile:#16224d; --gold:#ffd23f;
+  --px:'Press Start 2P',ui-monospace,Menlo,monospace; --txt:'VT323',ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;color:var(--ink);font-family:var(--txt);font-size:22px;background:var(--bg3);overflow:hidden}
+.app{height:100%;display:grid;grid-template-rows:auto 1fr auto auto;
+  background:
+    linear-gradient(180deg,var(--bg2) 0,var(--bg1) 45%,var(--bg3) 100%);
+  padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}
+.app::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9;background:repeating-linear-gradient(transparent 0 2px,rgba(0,0,0,.14) 2px 4px)}
+
+.top{display:flex;justify-content:space-between;align-items:center;padding:18px 4vw;position:relative;z-index:3}
+.brand{font:400 clamp(11px,1.6vw,18px)/1.4 var(--px);text-shadow:3px 3px 0 var(--line)}
+.brand .b{display:inline-block;animation:bob 1.2s steps(2) infinite}
+@keyframes bob{50%{transform:translateY(-4px)}}
+.clock{font:400 clamp(10px,1.3vw,15px)/1 var(--px);color:var(--ink);background:var(--line);padding:10px 14px;
+  box-shadow:0 -4px 0 var(--muted),0 4px 0 var(--muted),-4px 0 0 var(--muted),4px 0 0 var(--muted)}
+
+.hero{position:relative;min-height:0;overflow:hidden;margin-top:-72px;border-bottom:4px solid var(--line)}
+.bg{position:absolute;inset:0;background:var(--line)}
+.bg iframe{position:absolute;left:50%;top:50%;width:1280px;height:720px;border:0;pointer-events:none;background:#fff;transform-origin:center;opacity:0;transition:opacity .5s steps(5)}
+.bg iframe.on{opacity:.9}
+.hero::before{content:"";position:absolute;inset:0;z-index:1;
+  background:linear-gradient(90deg,rgba(8,13,32,.96) 0%,rgba(8,13,32,.78) 38%,rgba(8,13,32,0) 72%),
+             linear-gradient(0deg,var(--bg1) 0%,rgba(16,26,58,0) 38%),
+             linear-gradient(180deg,rgba(8,13,32,.85) 0%,rgba(8,13,32,0) 26%)}
+.hero::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;opacity:.35;
+  background-image:radial-gradient(var(--line) 1px,transparent 1.5px);background-size:4px 4px}
+.meta{position:absolute;z-index:2;left:4vw;bottom:5vh;max-width:min(560px,90vw)}
+.meta h1{margin:0 0 18px;font:400 clamp(20px,3.8vw,44px)/1.3 var(--px);text-shadow:4px 4px 0 var(--line)}
+.meta p{margin:0 0 26px;color:#d3defa;font-size:clamp(22px,2.3vw,30px);line-height:1.15;max-width:34ch;text-shadow:2px 2px 0 var(--line)}
+.play{display:inline-flex;align-items:center;gap:14px;background:var(--green);color:#06260b;text-decoration:none;
+  font:400 clamp(12px,1.4vw,17px)/1 var(--px);padding:18px 30px;margin:4px;
+  box-shadow:0 -4px 0 var(--line),0 4px 0 var(--line),-4px 0 0 var(--line),4px 0 0 var(--line),inset 0 -6px 0 var(--green-d),inset 0 6px 0 var(--green-l),0 10px 0 0 var(--line);
+  transition:transform .08s steps(2)}
+.play:hover{filter:brightness(1.1)}
+.play:active{transform:translateY(6px);box-shadow:0 -4px 0 var(--line),0 4px 0 var(--line),-4px 0 0 var(--line),4px 0 0 var(--line),inset 0 -6px 0 var(--green-d),inset 0 6px 0 var(--green-l)}
+.play svg{width:1em;height:1em;fill:currentColor;shape-rendering:crispEdges}
+
+.shelf{display:flex;gap:clamp(18px,2.4vw,34px);overflow-x:auto;padding:34px 4vw 26px;scroll-snap-type:x proximity;scrollbar-width:none;position:relative;z-index:3;background:var(--bg1)}
+.shelf::-webkit-scrollbar{display:none}
+.tile{flex:none;width:clamp(200px,22vw,300px);scroll-snap-align:center;appearance:none;background:none;border:0;padding:0;color:inherit;font:inherit;text-align:left;cursor:pointer;position:relative;
+  opacity:.65;transition:opacity .12s steps(2)}
+.tile .art{position:relative;aspect-ratio:16/9;overflow:hidden;background:var(--tile);margin:4px;
+  box-shadow:0 -4px 0 var(--line),0 4px 0 var(--line),-4px 0 0 var(--line),4px 0 0 var(--line),0 10px 0 0 var(--line)}
+.tile .art::after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(transparent 0 2px,rgba(0,0,0,.18) 2px 3px)}
+.tile .art iframe{position:absolute;left:0;top:0;width:1280px;height:720px;border:0;transform-origin:0 0;pointer-events:none;background:#fff}
+.tile .ph{position:absolute;inset:0;display:grid;place-items:center;font:400 40px var(--px);color:var(--muted)}
+.tile .name{display:block;margin-top:20px;font:400 12px/1.4 var(--px);visibility:hidden;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:2px 2px 0 var(--line)}
+.tile.sel{opacity:1;transform:translateY(-6px)}
+.tile.sel .art{box-shadow:0 -4px 0 var(--gold),0 4px 0 var(--gold),-4px 0 0 var(--gold),4px 0 0 var(--gold),0 12px 0 0 var(--line)}
+.tile.sel .name{visibility:visible}
+.tile.sel::before{content:"";position:absolute;left:50%;top:-30px;margin-left:-8px;width:16px;height:16px;background:var(--gold);
+  clip-path:polygon(0 0,100% 0,100% 25%,75% 25%,75% 50%,50% 50%,50% 75%,25% 75%,25% 50%,0 50%);animation:cur .8s steps(2) infinite}
+@keyframes cur{50%{transform:translateY(5px)}}
+.tile:focus-visible{outline:none}
+
+.hint{display:flex;gap:30px;justify-content:center;padding:6px 4vw 18px;color:var(--muted);font:400 10px/1 var(--px);position:relative;z-index:3;background:var(--bg1)}
+.hint b{display:inline-block;min-width:26px;text-align:center;padding:5px 6px;margin-right:8px;background:var(--line);color:var(--ink);font-weight:400;
+  box-shadow:0 -2px 0 var(--muted),0 2px 0 var(--muted),-2px 0 0 var(--muted),2px 0 0 var(--muted)}
+@media (hover:none),(max-width:640px){.hint{display:none}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="brand"><span class="b">🍌</span> Asher’s Banana</div>
+    <div class="clock" id="clock"></div>
+  </header>
+
+  <section class="hero" aria-live="polite">
+    <div class="bg" id="bg"></div>
+    <div class="meta">
+      <h1 id="t"></h1>
+      <p id="d"></p>
+      <a class="play" id="play" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.5v17l14-8.5z"/></svg>Play</a>
+    </div>
+  </section>
+
+  <nav class="shelf" id="shelf" aria-label="Games"></nav>
+
+  <div class="hint"><span><b>&lt; &gt;</b>Browse</span><span><b>Enter</b>Play</span></div>
+</div>
+
+<script>
+/* ------------------------------------------------------------------
+   ADD A GAME: copy one line below, change the name, url and desc,
+   then upload this file again. Visitors can't change the list.
+------------------------------------------------------------------ */
+var GAMES = [
+  { name: 'Pixel Bistro',  url: 'https://pixelbistro.vercel.app/', desc: 'Run a tiny restaurant. Serve guests, earn coins, grow your bistro.' },
+  { name: 'Pixel Fighter', url: 'https://pixel-fighter-rollback-netcode.vercel.app/', desc: 'A pixel fighting game with rollback netcode.' }
+];
+
+(function () {
+  var shelf = document.getElementById('shelf'), bg = document.getElementById('bg'),
+      tEl = document.getElementById('t'), dEl = document.getElementById('d'), play = document.getElementById('play');
+  var tiles = [], idx = 0, bgFrame = null, bgTimer = null;
+
+  function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
+  function frame(src, title) {
+    var f = document.createElement('iframe');
+    /* Previews are fully isolated from the real game:
+       - sandbox without allow-same-origin: no access to the game's saves, localStorage or cookies
+       - credentialless: previews load with a throwaway storage, cookie and cache (Chrome, Edge)
+       - empty allow: no camera, mic, etc. */
+    f.setAttribute('sandbox', 'allow-scripts');
+    f.setAttribute('credentialless', '');
+    f.setAttribute('allow', '');
+    f.setAttribute('tabindex', '-1'); f.setAttribute('aria-hidden', 'true');
+    f.setAttribute('referrerpolicy', 'no-referrer');
+    f.title = title; f.src = src; return f;
+  }
+  function fitTile(art) { var f = art.querySelector('iframe'); if (f) f.style.transform = 'scale(' + (art.clientWidth / 1280) + ')'; }
+  function fitBg() {
+    if (!bgFrame) return;
+    var sc = Math.max(bg.clientWidth / 1280, bg.clientHeight / 720);
+    bgFrame.style.transform = 'translate(-50%,-50%) scale(' + sc + ')';
+  }
+  function open(g) { window.open(g.url, '_blank', 'noopener'); }
+
+  function build() {
+    GAMES.forEach(function (g, i) {
+      var b = el('button', 'tile'); b.type = 'button';
+      b.setAttribute('aria-label', g.name);
+      var art = el('div', 'art');
+      art.appendChild(el('div', 'ph', g.name.charAt(0).toUpperCase()));
+      var f = frame(g.url, 'Preview of ' + g.name); f.setAttribute('loading', 'lazy');
+      art.appendChild(f);
+      b.appendChild(art); b.appendChild(el('span', 'name', g.name));
+      b.onclick = function () { if (i === idx) open(g); else select(i); };
+      b.onfocus = function () { if (i !== idx) select(i); };
+      shelf.appendChild(b); tiles.push(b);
+    });
+  }
+
+  function select(i, instant) {
+    if (!GAMES.length) return;
+    idx = (i + GAMES.length) % GAMES.length;
+    var g = GAMES[idx];
+    tiles.forEach(function (t, k) { t.classList.toggle('sel', k === idx); });
+    tiles[idx].scrollIntoView({ behavior: instant ? 'auto' : 'smooth', inline: 'center', block: 'nearest' });
+    tEl.textContent = g.name; dEl.textContent = g.desc || '';
+    dEl.style.display = g.desc ? '' : 'none';
+    play.href = g.url;
+    clearTimeout(bgTimer);
+    bgTimer = setTimeout(function () {
+      if (bgFrame) bgFrame.remove();
+      bgFrame = frame(g.url, 'Preview of ' + g.name);
+      bg.appendChild(bgFrame); fitBg();
+      bgFrame.onload = function () { bgFrame.classList.add('on'); };
+      setTimeout(function () { if (bgFrame) bgFrame.classList.add('on'); }, 1500);
+    }, instant ? 0 : 250);
+  }
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight') { e.preventDefault(); select(idx + 1); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); select(idx - 1); }
+    else if (e.key === 'Enter' && document.activeElement !== play) { e.preventDefault(); open(GAMES[idx]); }
+  });
+
+  function tick() {
+    document.getElementById('clock').textContent = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+  }
+  tick(); setInterval(tick, 20000);
+
+  function fitAll() { tiles.forEach(function (t) { fitTile(t.firstChild); }); fitBg(); }
+  window.addEventListener('resize', fitAll);
+
+  if (!GAMES.length) { tEl.textContent = 'No games yet'; dEl.textContent = 'Add one in the GAMES list in index.html.'; play.style.display = 'none'; return; }
+  build(); fitAll(); select(0, true);
+  requestAnimationFrame(fitAll);
+})();
+</script>
+</body>
+</html>
